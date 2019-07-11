@@ -7,7 +7,7 @@ import java.util.HashMap;
 import lombok.Data;
 
 @Data
-public class NaverSearchShoppingResultItems  implements Serializable {
+public class NaverSearchShoppingResultItem  implements Serializable {
 
 	private static final long serialVersionUID = -4089627625596032246L;
 

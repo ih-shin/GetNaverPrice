@@ -17,5 +17,5 @@ public class NaverSearchShoppingResult implements Serializable {
 	private int    total;
 	private String start;
 	private String display;
-	private List<NaverSearchShoppingResultItems> items;
+	private List<NaverSearchShoppingResultItem> items;
 }

@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 import com.orz.base.service.NaverSearchAsyncService;
 import com.orz.base.vo.NaverSearchOption;
 import com.orz.base.vo.NaverSearchShoppingResult;
-import com.orz.base.vo.NaverSearchShoppingResultItems;
+import com.orz.base.vo.NaverSearchShoppingResultItem;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,7 +58,7 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 			ResponseHandler<String> handler = new BasicResponseHandler();
 			String body = handler.handleResponse(response);
 			Boolean stop = false;
-			ArrayList<NaverSearchShoppingResultItems> mailList = new ArrayList<NaverSearchShoppingResultItems>();		
+			ArrayList<NaverSearchShoppingResultItem> mailList = new ArrayList<NaverSearchShoppingResultItem>();		
 			
 			Gson gson = new Gson();
 			NaverSearchShoppingResult result = gson.fromJson(body, NaverSearchShoppingResult.class);
@@ -89,7 +89,7 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 					
 					result = gson.fromJson(body, NaverSearchShoppingResult.class);
 					
-					for(NaverSearchShoppingResultItems items : result.getItems()) {
+					for(NaverSearchShoppingResultItem items : result.getItems()) {
 						if (max < items.getLprice() ) {
 
 							max = (int) items.getLprice(); 
@@ -169,7 +169,7 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 		log.info("전체 : " + totSize);
 		log.info("총 페이지 : " + totPage);
 		
-		ArrayList<NaverSearchShoppingResultItems> mailList = new ArrayList<NaverSearchShoppingResultItems>();
+		ArrayList<NaverSearchShoppingResultItem> mailList = new ArrayList<NaverSearchShoppingResultItem>();
 		
 		for(int i=1; i<=totPage; i++) {
 			if(i > 1) searchUrl = searchUrl.replace("pagingIndex="+(i-1), "pagingIndex="+i);
@@ -180,23 +180,23 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 			doc = Jsoup.connect(searchUrl).get();
 			
 			for(Element element : doc.getElementsByClass("_itemSection")) {
-				NaverSearchShoppingResultItems naverSearchShoppingResultItems = new NaverSearchShoppingResultItems();
-				naverSearchShoppingResultItems.setTitle(element.getElementsByClass("_productLazyImg").get(0).attr("alt"));
-				naverSearchShoppingResultItems.setImage(element.getElementsByClass("_productLazyImg").get(0).attr("src"));
-				naverSearchShoppingResultItems.setLink(element.getElementsByClass("img_area").get(0).child(0).attr("href"));
+				NaverSearchShoppingResultItem naverSearchShoppingResultItem = new NaverSearchShoppingResultItem();
+				naverSearchShoppingResultItem.setTitle(element.getElementsByClass("_productLazyImg").get(0).attr("alt"));
+				naverSearchShoppingResultItem.setImage(element.getElementsByClass("_productLazyImg").get(0).attr("src"));
+				naverSearchShoppingResultItem.setLink(element.getElementsByClass("img_area").get(0).child(0).attr("href"));
 				if(element.getElementsByClass("_price_reload").text().replace(",", "").trim().length() > 0) {
-					naverSearchShoppingResultItems.setLprice(Double.parseDouble(element.getElementsByClass("_price_reload").text().replaceAll("[^0-9]", "")));
+					naverSearchShoppingResultItem.setLprice(Double.parseDouble(element.getElementsByClass("_price_reload").text().replaceAll("[^0-9]", "")));
 				}
 				else {
-					naverSearchShoppingResultItems.setLprice(Double.parseDouble(element.getElementsByClass("price_won").text().replaceAll("[^0-9]", "")));
+					naverSearchShoppingResultItem.setLprice(Double.parseDouble(element.getElementsByClass("price_won").text().replaceAll("[^0-9]", "")));
 				}
-				naverSearchShoppingResultItems.setEvent(element.getElementsByClass("event").text());
+				naverSearchShoppingResultItem.setEvent(element.getElementsByClass("event").text());
 				
 				if(element.getElementsByClass("mall_img").get(0).getElementsByTag("img").attr("alt").length() == 0) {
-					naverSearchShoppingResultItems.setMallName(element.getElementsByClass("mall_txt").get(0).child(0).text());
+					naverSearchShoppingResultItem.setMallName(element.getElementsByClass("mall_txt").get(0).child(0).text());
 				}
 				else {
-					naverSearchShoppingResultItems.setMallName(element.getElementsByClass("mall_img").get(0).getElementsByTag("img").attr("alt"));
+					naverSearchShoppingResultItem.setMallName(element.getElementsByClass("mall_img").get(0).getElementsByTag("img").attr("alt"));
 				}
 				
 				if(element.getElementsByClass("mall_list").size() > 0) {
@@ -214,7 +214,7 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 							}
 						}
 					}
-					naverSearchShoppingResultItems.setMallList(mallList);
+					naverSearchShoppingResultItem.setMallList(mallList);
 				}
 				
 				if(element.getElementsByClass("mall_option").size() > 0) {
@@ -227,21 +227,21 @@ public class NaverSearchAsyncServiceImpl implements NaverSearchAsyncService{
 						if(option.length() > 0)
 							optionList.add(option);
 					}
-					naverSearchShoppingResultItems.setMallOption(optionList);
+					naverSearchShoppingResultItem.setMallOption(optionList);
 				}
 
-				naverSearchShoppingResultItems.setCategory(element.getElementsByClass("depth").text().split(">")[0].trim());
+				naverSearchShoppingResultItem.setCategory(element.getElementsByClass("depth").text().split(">")[0].trim());
 
 				if(mailList.size() > 9) break;
 				
-				mailList.add(naverSearchShoppingResultItems);
+				mailList.add(naverSearchShoppingResultItem);
 				
 			}
 
 			if(mailList.size() > 9) break;
 		}
 		
-		for(NaverSearchShoppingResultItems a : mailList) { 
+		for(NaverSearchShoppingResultItem a : mailList) { 
 			log.info("판매처 : " + a.getMallName() + " 가격 : " + a.getLprice() + " 링크 : " + a.getLink() );
 		}
 		
