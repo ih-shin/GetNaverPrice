@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.orz.base.dao.NaverRowPriceDao">
+	
+	<select id="selectReseachReservation" resultType="java.util.HashMap">
+		select seq
+		     , user_no
+		  from research_reservation_m
+		 where end_dt <![CDATA[ >= ]]> date_format(now(), '%Y%m%d')
+		   and str_dt <![CDATA[ <= ]]>date_format(now(), '%Y%m%d')
+	</select>
+	
+	<select id="selectReseachReservationDetail" parameterType="String" resultType="java.util.HashMap">
+		select seq
+		     , user_no
+		  from research_reservation_d
+		 where seq = #{seq}
+	</select>
+	
+	<select id="selectItem" resultType="java.util.HashMap">
+		select research_reservation_d.item     	item
+		     , research_reservation_d.min_price	minPrice
+		     , research_reservation_d.max_price	maxPrice
+		     , research_reservation_d.sort		sort
+		     , research_reservation_d.delivery	delivery
+		  from research_reservation_d
+		  join research_reservation_m
+		    on research_reservation_d.seq = research_reservation_m.seq
+		 where research_reservation_m.end_dt <![CDATA[ >= ]]> date_format(now(), '%Y%m%d')
+		   and research_reservation_m.str_dt <![CDATA[ <= ]]> date_format(now(), '%Y%m%d')
+		   and research_reservation_d.use_yn = 'Y'
+		 group by research_reservation_d.item
+		 	    , research_reservation_d.min_price
+		 	    , research_reservation_d.max_price
+		 	    , research_reservation_d.sort
+		 	    , research_reservation_d.delivery
+	</select>
+</mapper>

@@ -1,0 +1,10 @@
+CREATE TABLE `research_reservation_d` (
+  `seq` int(11) NOT NULL,
+  `item` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `min_price` int(11) NOT NULL DEFAULT '0',
+  `max_price` int(11) DEFAULT '0',
+  `delivery` varchar(1) DEFAULT 'N',
+  `use_yn` varchar(1) DEFAULT 'N',
+  `sort` varchar(20) DEFAULT 'price_asc',
+  PRIMARY KEY (`seq`,`item`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
