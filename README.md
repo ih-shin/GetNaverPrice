@@ -16,4 +16,4 @@
     
 2. rabbitMq 설치<br>
 
-3. springboot <br>
+3. springboot 실행<br>
