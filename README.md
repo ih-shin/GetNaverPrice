@@ -1,6 +1,6 @@
 # GetNaverPrice
 
-네이버 쇼핑 가격 검색(springboot +  + mysql + rabbitMq)
+네이버 쇼핑 가격 검색(springboot + mysql + rabbitMq)
 
 #주의<br>
 해당 프로젝트는 샘플프로젝트입니다.<br>
